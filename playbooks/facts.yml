@@ -1,0 +1,22 @@
+---
+- name: Coleta informações do host e últimos erros
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Mostrar sistema operacional
+      ansible.builtin.debug:
+        var: ansible_distribution
+
+    - name: Mostrar load average
+      ansible.builtin.debug:
+        msg: "Load average: {{ ansible_facts['loadavg'] }}"
+
+    - name: Mostrar últimos erros no syslog
+      ansible.builtin.shell: "grep -i 'error' /var/log/messages | tail -n 10"
+      register: erros
+      changed_when: false
+
+    - name: Exibir erros coletados
+      ansible.builtin.debug:
+        var: erros.stdout_lines
+

@@ -1,0 +1,27 @@
+---
+- name: Copiar e apagar arquivo de 100MB
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Copiar arquivo para destino
+      ansible.builtin.copy:
+        src: files/teste_100mb.dat
+        dest: /tmp/teste_100mb_dest.dat
+        mode: '0644'
+
+
+    - name: Verificar se o arquivo foi copiado
+      ansible.builtin.stat:
+        path: /tmp/teste_100mb_dest.dat
+      register: arquivo_inicial
+
+    - name: debug arquivo
+      debug:
+        var: arquivo_inicial.stdout
+
+    - name: Remover arquivo copiado
+      ansible.builtin.file:
+        path: /tmp/teste_100mb_dest.dat
+        state: absent
+

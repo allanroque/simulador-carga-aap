@@ -1,0 +1,68 @@
+---
+- name: Simular carga de I/O, CPU e memória
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Verificar se o arquivo existe antes da cópia
+      ansible.builtin.stat:
+        path: /tmp/teste_10mb_dest.dat
+      register: arquivo_inicial
+
+    - name: Mostrar status inicial do arquivo
+      ansible.builtin.debug:
+        var: arquivo_inicial.stat.exists
+
+    - name: Copiar arquivo de 10MB para destino
+      ansible.builtin.copy:
+        src: files/teste_10mb.dat
+        dest: /tmp/teste_10mb_dest.dat
+        mode: '0644'
+
+    - name: Verificar se o arquivo foi copiado
+      ansible.builtin.stat:
+        path: /tmp/teste_10mb_dest.dat
+      register: arquivo_copiado
+
+    - name: Mostrar status após cópia
+      ansible.builtin.debug:
+        var: arquivo_copiado.stat
+
+    - name: Simular carga de CPU e memória (hash em arquivo de 10MB)
+      ansible.builtin.command: "sha256sum /tmp/teste_10mb_dest.dat"
+      register: resultado_hash
+
+    - name: Mostrar resultado do hash
+      ansible.builtin.debug:
+        var: resultado_hash.stdout
+
+    - name: Criar arquivo temporário de 500MB para estressar memória
+      ansible.builtin.command: "dd if=/dev/zero of=/tmp/stress_mem_500mb.dat bs=1M count=500"
+      args:
+        creates: /tmp/stress_mem_500mb.dat
+
+    - name: Calcular hash no arquivo temporário (forçar CPU)
+      ansible.builtin.command: "sha256sum /tmp/stress_mem_500mb.dat"
+      register: resultado_hash_mem
+
+    - name: Mostrar resultado do hash do arquivo de memória
+      ansible.builtin.debug:
+        var: resultado_hash_mem.stdout
+
+    - name: Remover arquivos criados para teste
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/teste_10mb_dest.dat
+        - /tmp/stress_mem_500mb.dat
+
+    - name: Verificar se arquivos foram removidos
+      ansible.builtin.stat:
+        path: /tmp/teste_10mb_dest.dat
+      register: arquivo_removido
+
+    - name: Mostrar status final do arquivo de 10MB
+      ansible.builtin.debug:
+        var: arquivo_removido.stat.exists
+

@@ -1,0 +1,7 @@
+---
+- name: Job de espera para simular fila
+  hosts: all
+  tasks:
+    - name: Espera 5 minutos (simulando job demorado)
+      ansible.builtin.wait_for:
+        timeout: 300   # 5 minutos

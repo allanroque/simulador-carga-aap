@@ -1,0 +1,13 @@
+---
+- name: Remove pacotes básicos
+  hosts: all
+  become: true
+  tasks:
+    - name: Remover vim, curl e wget
+      ansible.builtin.package:
+        name:
+          - vim
+          - curl
+          - wget
+	  - tree
+        state: absent

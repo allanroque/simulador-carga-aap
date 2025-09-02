@@ -1,0 +1,14 @@
+---
+- name: Instala pacotes básicos
+  hosts: all
+  become: true
+  tasks:
+    - name: Instalar vim, curl e wget
+      ansible.builtin.package:
+        name:
+          - vim
+          - curl
+          - wget
+	  - tree
+        state: present
+
