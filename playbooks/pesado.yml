@@ -66,3 +66,7 @@
       ansible.builtin.debug:
         var: arquivo_removido.stat.exists
 
+
+    - name: Espera 2 minutos (simulando job demorado)
+      ansible.builtin.wait_for:
+        timeout: 120   # 2 minutos

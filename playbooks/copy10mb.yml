@@ -23,4 +23,3 @@
       ansible.builtin.file:
         path: /tmp/teste_10mb_dest.dat
         state: absent
-
