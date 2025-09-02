@@ -9,6 +9,6 @@
           - vim
           - curl
           - wget
-	  - tree
+          - tree
         state: present
 

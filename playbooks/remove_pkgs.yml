@@ -9,5 +9,5 @@
           - vim
           - curl
           - wget
-	  - tree
+          - tree
         state: absent
